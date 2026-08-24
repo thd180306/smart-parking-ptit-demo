@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cổng Sinh viên — PTIT Smart Parking</title>
+    <link rel="stylesheet" href="/static/css/user_style.css">
+</head>
+<body>
+    <!-- Top Application Bar -->
+    <header class="app-header">
+        <div class="header-container">
+            <div class="brand-group">
+                <div class="brand-badge">
+                    <svg viewBox="0 0 24 24"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.5 2.8C2.1 11 2 11.5 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>
+                </div>
+                <div>
+                    <div class="brand-title">PTIT Smart Parking</div>
+                    <div class="brand-subtitle">Cổng Thông tin Dịch vụ Gửi xe Sinh viên</div>
+                </div>
+            </div>
+
+            <div class="user-meta-group">
+                <div class="user-pill">
+                    <div class="user-avatar" id="avatar-initials">SV</div>
+                    <div class="user-details">
+                        <div class="user-name" id="top-user-name">Đang tải...</div>
+                        <div class="user-mssv" id="top-user-mssv">MSSV: ...</div>
+                    </div>
+                </div>
+                <button type="button" class="btn-logout" onclick="handleLogout()" title="Đăng xuất khỏi hệ thống">
+                    <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    <span>Thoát</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="portal-nav">
+        <div class="nav-container">
+            <button type="button" class="nav-tab active" id="tab-btn-overview" onclick="switchUserTab('overview')">
+                <svg viewBox="0 0 24 24"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+                <span>Tổng quan ví</span>
+            </button>
+            <button type="button" class="nav-tab" id="tab-btn-parking" onclick="switchUserTab('parking')">
+                <svg viewBox="0 0 24 24"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.5 2.8C2.1 11 2 11.5 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>
+                <span>Lịch sử gửi xe</span>
+            </button>
+            <button type="button" class="nav-tab" id="tab-btn-wallet" onclick="switchUserTab('wallet')">
+                <svg viewBox="0 0 24 24"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
+                <span>Biến động số dư</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="portal-main">
+        <div class="content-container">
+
+            <!-- TAB 1: OVERVIEW -->
+            <section id="section-overview" class="tab-pane active">
+                <div class="overview-grid">
+                    <!-- Left: Digital Wallet Card -->
+                    <div class="wallet-card">
+                        <div class="card-top">
+                            <div class="card-chip">
+                                <svg viewBox="0 0 24 24"><rect width="18" height="14" x="3" y="5" rx="2"/><path d="M7 15h.01"/><path d="M11 15h2"/></svg>
+                                <span>PTIT SMART PASS</span>
+                            </div>
+                            <div class="nfc-icon">
+                                <svg viewBox="0 0 24 24"><path d="M2 12C2 6.5 6.5 2 12 2a10 10 0 0 1 8 4"/><path d="M5 12.5C5 8.4 8.4 5 12.5 5c2.3 0 4.4 1 5.9 2.6"/><path d="M8 13a4.5 4.5 0 0 1 4.5-4.5"/></svg>
+                            </div>
+                        </div>
+
+                        <div class="card-balance-block">
+                            <div class="balance-label">Số dư khả dụng</div>
+                            <div class="balance-amount" id="card-balance-text">0 VNĐ</div>
+                        </div>
+
+                        <div class="card-bottom">
+                            <div>
+                                <div class="card-sublabel">Chủ thẻ sinh viên</div>
+                                <div class="card-holder-name" id="card-holder-name">Đang tải...</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div class="card-sublabel">Trạng thái gửi xe</div>
+                                <div id="card-parking-status" class="status-badge status-outside">Ngoài bãi</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Quick Info & Actions -->
+                    <div class="info-action-card">
+                        <h2 class="card-heading">Thông tin phương tiện & Thẻ NFC</h2>
+                        
+                        <div class="meta-list">
+                            <div class="meta-item">
+                                <span class="meta-label">Mã số sinh viên:</span>
+                                <span class="meta-value font-mono" id="meta-mssv">—</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">Biển số đăng ký:</span>
+                                <span class="meta-value font-mono plate-tag" id="meta-plate">—</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">Mã định danh thẻ NFC:</span>
+                                <span class="meta-value font-mono" id="meta-nfc">—</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">Mức phí gửi xe tiêu chuẩn:</span>
+                                <span class="meta-value">3.000 VNĐ / lượt</span>
+                            </div>
+                        </div>
+
+                        <div class="action-buttons">
+                            <button type="button" class="btn-primary" onclick="openDepositModal()">
+                                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                                <span>Nạp tiền vào ví</span>
+                            </button>
+                            <button type="button" class="btn-secondary" onclick="switchUserTab('parking')">
+                                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                <span>Xem lịch sử ra/vào</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity Preview -->
+                <div class="section-block">
+                    <div class="section-header">
+                        <h2 class="section-title">Hoạt động gần đây</h2>
+                        <button type="button" class="btn-link" onclick="switchUserTab('parking')">Xem tất cả &rarr;</button>
+                    </div>
+                    <div id="recent-preview-list" class="recent-list">
+                        <div class="empty-state">Đang tải lịch sử hoạt động...</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: PARKING HISTORY -->
+            <section id="section-parking" class="tab-pane">
+                <div class="section-header">
+                    <div>
+                        <h2 class="section-title">Nhật ký Lịch sử Gửi xe</h2>
+                        <p class="section-subtitle">Danh sách toàn bộ các lượt quẹt thẻ NFC và nhận diện biển số xe tại cổng</p>
+                    </div>
+                    <button type="button" class="btn-secondary" onclick="loadParkingHistory(true)">
+                        <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 21h5v-5"/></svg>
+                        <span>Làm mới</span>
+                    </button>
+                </div>
+
+                <div class="table-card">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Thời gian</th>
+                                <th>Biển số nhận diện</th>
+                                <th>Phương thức quét</th>
+                                <th>Sự kiện / Lượt</th>
+                                <th>Phí gửi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="parking-history-tbody">
+                            <tr><td colspan="5" class="empty-state">Đang tải dữ liệu lịch sử...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- TAB 3: WALLET TRANSACTIONS -->
+            <section id="section-wallet" class="tab-pane">
+                <div class="section-header">
+                    <div>
+                        <h2 class="section-title">Lịch sử Biến động Số dư</h2>
+                        <p class="section-subtitle">Chi tiết các khoản nạp tiền, trừ phí gửi xe và hoàn tiền theo quy định</p>
+                    </div>
+                    <button type="button" class="btn-primary" onclick="openDepositModal()">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                        <span>Nạp tiền</span>
+                    </button>
+                </div>
+
+                <div class="table-card">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Thời gian</th>
+                                <th>Nội dung giao dịch</th>
+                                <th>Phương thức</th>
+                                <th>Biến động số dư</th>
+                            </tr>
+                        </thead>
+                        <tbody id="wallet-history-tbody">
+                            <tr><td colspan="4" class="empty-state">Đang tải dữ liệu giao dịch...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Deposit Modal (Strictly hidden on load) -->
+    <div id="modal-deposit" class="modal-backdrop" style="display: none;" onclick="handleModalBackdropClick(event)">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <div class="modal-title-group">
+                    <div class="modal-icon">
+                        <svg viewBox="0 0 24 24"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
+                    </div>
+                    <h3 class="modal-title">Nạp tiền vào tài khoản gửi xe</h3>
+                </div>
+                <button type="button" class="modal-close-btn" onclick="closeDepositModal()" title="Đóng cửa sổ">
+                    <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="modal-desc">Chọn mệnh giá nạp nhanh hoặc nhập số tiền tùy ý:</div>
+                
+                <div class="preset-amount-grid">
+                    <button type="button" class="amount-chip" onclick="selectDepositAmount(20000)">20.000đ</button>
+                    <button type="button" class="amount-chip" onclick="selectDepositAmount(50000)">50.000đ</button>
+                    <button type="button" class="amount-chip" onclick="selectDepositAmount(100000)">100.000đ</button>
+                    <button type="button" class="amount-chip" onclick="selectDepositAmount(200000)">200.000đ</button>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="inp-deposit-amount">Số tiền nạp (VNĐ):</label>
+                    <input type="number" id="inp-deposit-amount" class="form-control text-center font-bold" placeholder="Nhập số tiền..." min="1000" step="1000" value="50000">
+                </div>
+
+                <div class="qr-preview-box">
+                    <div class="qr-label">Mã VietQR thanh toán tự động:</div>
+                    <img id="deposit-qr-img" src="https://img.vietqr.io/image/970415-123456789-qr_only.png?amount=50000&addInfo=PTIT%20Parking" alt="Mã VietQR">
+                    <div class="qr-hint">Quét mã bằng ứng dụng Ngân hàng để nạp tiền tức thì</div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="closeDepositModal()">Hủy</button>
+                <button type="button" class="btn-primary" id="btn-confirm-deposit" onclick="submitDeposit()">
+                    <span id="btn-confirm-deposit-text">Xác nhận Nạp tiền</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast-message" class="toast-popup"></div>
+
+    <script src="/static/js/user_script.js"></script>
+</body>
+</html>

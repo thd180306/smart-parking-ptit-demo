@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ thống Quản lý Bãi đỗ xe PTIT — Quản trị viên</title>
+    <link rel="stylesheet" href="/static/css/admin_style.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-icon">
+                    <svg viewBox="0 0 24 24"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.5 2.8C2.1 11 2 11.5 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>
+                </div>
+                <div>
+                    <div class="brand-title">PTIT PARKING</div>
+                    <div class="brand-sub">Hệ thống Quản trị Trung tâm</div>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <button type="button" class="nav-item active" id="nav-dashboard" onclick="switchAdminTab('dashboard')">
+                    <svg viewBox="0 0 24 24"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+                    <span>Tổng quan</span>
+                </button>
+                <button type="button" class="nav-item" id="nav-parking" onclick="switchAdminTab('parking')">
+                    <svg viewBox="0 0 24 24"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+                    <span>Cổng quét Ra/Vào</span>
+                </button>
+                <button type="button" class="nav-item" id="nav-students" onclick="switchAdminTab('students')">
+                    <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    <span>Quản lý Sinh viên</span>
+                </button>
+                <button type="button" class="nav-item" id="nav-query" onclick="switchAdminTab('query')">
+                    <svg viewBox="0 0 24 24"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
+                    <span>Nạp tiền & Tra cứu</span>
+                </button>
+                <button type="button" class="nav-item" id="nav-history" onclick="switchAdminTab('history')">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    <span>Nhật ký Lịch sử</span>
+                </button>
+                <button type="button" class="nav-item" id="nav-staff-income" onclick="switchAdminTab('staff-income')">
+                    <svg viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><line x1="8" x2="16" y1="12" y2="12"/><line x1="12" x2="12" y1="8" x2="16"/></svg>
+                    <span>Thu nhập Bảo vệ</span>
+                </button>
+                <button type="button" class="nav-item" id="nav-schema" onclick="switchAdminTab('schema')">
+                    <svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></svg>
+                    <span>Schema CSDL & SQL</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="admin-user-pill">
+                    <div class="admin-avatar">AD</div>
+                    <div class="admin-info">
+                        <div class="admin-name">Quản trị viên</div>
+                        <div class="admin-status"><span class="status-dot"></span> Trực tuyến</div>
+                    </div>
+                </div>
+                <button type="button" class="btn-sidebar-logout" onclick="handleAdminLogout()" title="Đăng xuất khỏi hệ thống">
+                    <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Canvas -->
+        <div class="main-canvas">
+            <!-- Top App Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <h1 class="header-title" id="admin-page-title">Tổng quan hệ thống</h1>
+                </div>
+                <div class="header-right">
+                    <div class="clock-badge">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        <span id="clock-display">--:--:--</span>
+                    </div>
+                    <div class="gate-status-badge">
+                        <span class="pulse-dot"></span> Cổng Barrier: Sẵn sàng
+                    </div>
+                </div>
+            </header>
+
+            <!-- TAB 1: DASHBOARD OVERVIEW -->
+            <section id="tab-dashboard" class="admin-tab-pane active">
+                <div class="kpi-grid">
+                    <div class="kpi-card" onclick="switchAdminTab('students')">
+                        <div class="kpi-icon blue">
+                            <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        </div>
+                        <div class="kpi-data">
+                            <div class="kpi-label">Tổng sinh viên đăng ký</div>
+                            <div class="kpi-value" id="stat-students">0</div>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card" onclick="switchAdminTab('history')">
+                        <div class="kpi-icon green">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/></svg>
+                        </div>
+                        <div class="kpi-data">
+                            <div class="kpi-label">Doanh thu thu phí bãi</div>
+                            <div class="kpi-value" id="stat-revenue">0đ</div>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card" onclick="openCarsInParkingModal()">
+                        <div class="kpi-icon orange">
+                            <svg viewBox="0 0 24 24"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.5 2.8C2.1 11 2 11.5 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>
+                        </div>
+                        <div class="kpi-data">
+                            <div class="kpi-label">Xe đang trong bãi</div>
+                            <div class="kpi-value" id="stat-cars">0</div>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card" onclick="switchAdminTab('history')">
+                        <div class="kpi-icon purple">
+                            <svg viewBox="0 0 24 24"><path d="M7 16V4m0 0L3 8m4-4l4 4"/><path d="M17 8v12m0 0l4-4m-4 4l-4-4"/></svg>
+                        </div>
+                        <div class="kpi-data">
+                            <div class="kpi-label">Tổng lượt giao dịch</div>
+                            <div class="kpi-value" id="stat-transactions">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Live Events & Quick Links -->
+                <div class="dashboard-bottom-grid">
+                    <div class="card-panel">
+                        <div class="panel-header">
+                            <h2 class="panel-title">Giao dịch ra/vào gần nhất</h2>
+                            <button type="button" class="btn-text" onclick="switchAdminTab('history')">Xem toàn bộ nhật ký &rarr;</button>
+                        </div>
+                        <div class="table-container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Thời gian</th>
+                                        <th>MSSV</th>
+                                        <th>Biển số</th>
+                                        <th>Sự kiện</th>
+                                        <th>Biến động</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dashboard-recent-tbody">
+                                    <tr><td colspan="5" class="empty-state">Đang tải nhật ký gần đây...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card-panel">
+                        <div class="panel-header">
+                            <h2 class="panel-title">Lối tắt tác vụ</h2>
+                        </div>
+                        <div class="shortcut-list">
+                            <button type="button" class="shortcut-btn" onclick="switchAdminTab('parking')">
+                                <div class="shortcut-icon"><svg viewBox="0 0 24 24"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg></div>
+                                <div>
+                                    <div class="shortcut-title">Trạm kiểm soát Cổng quét</div>
+                                    <div class="shortcut-sub">Quét xe vào/ra qua Camera AI OCR & Thẻ NFC</div>
+                                </div>
+                            </button>
+
+                            <button type="button" class="shortcut-btn" onclick="openAddStudentModal()">
+                                <div class="shortcut-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
+                                <div>
+                                    <div class="shortcut-title">Đăng ký sinh viên mới</div>
+                                    <div class="shortcut-sub">Thêm phương tiện và cấp mã thẻ NFC mới</div>
+                                </div>
+                            </button>
+
+                            <button type="button" class="shortcut-btn" onclick="switchAdminTab('staff-income')">
+                                <div class="shortcut-icon"><svg viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><line x1="8" x2="16" y1="12" y2="12"/><line x1="12" x2="12" y1="8" x2="16"/></svg></div>
+                                <div>
+                                    <div class="shortcut-title">Bảng tính lương bảo vệ</div>
+                                    <div class="shortcut-sub">Xem bảng lương cơ bản và thưởng sự cố (+50k/lần)</div>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: PARKING GATE CONTROL -->
+            <section id="tab-parking" class="admin-tab-pane">
+                <div class="gate-grid">
+                    <!-- Left: Camera OCR & Scan Form -->
+                    <div class="card-panel">
+                        <div class="panel-header">
+                            <h2 class="panel-title">Thiết bị Nhận diện & Đầu đọc Cổng</h2>
+                        </div>
+
+                        <div class="camera-simulator">
+                            <div class="camera-lens">
+                                <svg viewBox="0 0 24 24"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+                            </div>
+                            <div class="camera-text">CAMERA AI OCR — TỰ ĐỘNG QUÉT BIỂN SỐ</div>
+                            <div class="ocr-scan-line"></div>
+                        </div>
+
+                        <form id="form-parking-scan" onsubmit="handleParkingScan(event)">
+                            <div class="form-group">
+                                <label class="form-label" for="scan-plate">Biển số nhận diện từ Camera:</label>
+                                <input type="text" id="scan-plate" class="form-control font-mono font-bold text-center" placeholder="VD: 29L1-12345" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="scan-nfc">Mã thẻ NFC quẹt tại đầu đọc:</label>
+                                <input type="text" id="scan-nfc" class="form-control font-mono font-bold text-center" placeholder="VD: NFC001" required>
+                            </div>
+
+                            <button type="submit" class="btn-action btn-primary w-full">
+                                <svg viewBox="0 0 24 24"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.5 2.8C2.1 11 2 11.5 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>
+                                <span>Kích hoạt Quẹt xe (Check In/Out)</span>
+                            </button>
+                        </form>
+
+                        <div class="preset-box">
+                            <div class="preset-label">Mẫu dữ liệu kiểm tra nhanh:</div>
+                            <div class="preset-buttons">
+                                <button type="button" class="preset-btn" onclick="fillScanForm('29L1-12345', 'NFC001')">
+                                    <span>Xe SV Nguyễn Văn A (29L1-12345 / NFC001)</span>
+                                    <small>Bình thường</small>
+                                </button>
+                                <button type="button" class="preset-btn alert-preset" onclick="fillScanForm('29L1-12345', 'NFC002')">
+                                    <span>Cảnh báo: Sai thẻ NFC (29L1-12345 / NFC002)</span>
+                                    <small>Bị giữ xe</small>
+                                </button>
+                                <button type="button" class="preset-btn warning-preset" onclick="fillScanForm('30V3-11223', 'NFC003')">
+                                    <span>Xe 0đ hết tiền (30V3-11223 / NFC003)</span>
+                                    <small>Hiện VietQR</small>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Barrier Animation & Action Panel -->
+                    <div class="card-panel">
+                        <div class="panel-header">
+                            <h2 class="panel-title">Trạng thái Cổng Barrier & Phản hồi</h2>
+                        </div>
+
+                        <!-- Physical Barrier Animation -->
+                        <div class="barrier-scene">
+                            <div class="barrier-pillar">
+                                <div id="barrier-led" class="barrier-led led-red"></div>
+                            </div>
+                            <div id="barrier-rod" class="barrier-rod rod-closed"></div>
+                        </div>
+                        <div id="barrier-text-indicator" class="barrier-text text-red">BARRIER ĐANG ĐÓNG</div>
+
+                        <!-- Scan Status Message Box -->
+                        <div id="scan-feedback-box" class="scan-feedback-box">
+                            <div id="scan-idle-state" class="feedback-idle">
+                                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                                <div>Hệ thống đang chờ xe vào/ra tiếp theo.</div>
+                            </div>
+                            <div id="scan-result-text" class="feedback-result" style="display: none;"></div>
+                        </div>
+
+                        <!-- VietQR Frame for Insufficient Funds -->
+                        <div id="vietqr-frame" class="action-card-box border-warning" style="display: none;">
+                            <div class="box-title text-warning"><svg viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 7h.01"/><path d="M17 7h.01"/><path d="M7 17h.01"/><path d="M17 17h.01"/></svg> Thanh toán cước gửi xe qua VietQR:</div>
+                            <img id="vietqr-img" src="" alt="Mã VietQR" class="qr-img">
+                            <button type="button" class="btn-action btn-success w-full mt-2" id="btn-cash-confirm" onclick="confirmCashPayment()">
+                                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                                <span>Xác nhận đã thu tiền mặt tại quầy</span>
+                            </button>
+                        </div>
+
+                        <!-- Security Escalation Box -->
+                        <div id="security-escalation-frame" class="action-card-box border-danger" style="display: none;">
+                            <div class="box-title text-danger"><svg viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Quy trình xử lý sự cố an ninh bãi xe:</div>
+                            
+                            <div class="form-group mb-2">
+                                <label class="form-label" for="select-guard">Nhân viên bảo vệ tiếp nhận:</label>
+                                <select id="select-guard" class="form-control"></select>
+                            </div>
+
+                            <div class="grid-2 gap-2">
+                                <button type="button" class="btn-action btn-danger" onclick="resolveSecurityAlert('hold')">
+                                    <svg viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                                    <span>Giữ xe lại bãi</span>
+                                </button>
+                                <button type="button" class="btn-action btn-success" onclick="resolveSecurityAlert('release')">
+                                    <svg viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                                    <span>Xác minh & Cho ra</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: STUDENT MANAGEMENT -->
+            <section id="tab-students" class="admin-tab-pane">
+                <div class="card-panel">
+                    <div class="panel-header">
+                        <div>
+                            <h2 class="panel-title">Danh sách Sinh viên & Phương tiện</h2>
+                            <p class="panel-sub">Quản lý tài khoản, số dư ví, thẻ NFC và trạng thái phương tiện</p>
+                        </div>
+                        <button type="button" class="btn-action btn-primary" onclick="openAddStudentModal()">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                            <span>Thêm sinh viên mới</span>
+                        </button>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>MSSV</th>
+                                    <th>Họ và tên</th>
+                                    <th>Biển số xe</th>
+                                    <th>Mã thẻ NFC</th>
+                                    <th>Số dư ví</th>
+                                    <th>Trạng thái</th>
+                                    <th style="text-align: right;">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="students-table-tbody">
+                                <tr><td colspan="7" class="empty-state">Đang tải danh sách sinh viên...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: QUERY & COUNTER DEPOSIT -->
+            <section id="tab-query" class="admin-tab-pane">
+                <div class="card-panel max-w-md mx-auto">
+                    <div class="panel-header">
+                        <h2 class="panel-title">Tra cứu & Nạp tiền tại Quầy</h2>
+                    </div>
+
+                    <div class="search-row">
+                        <input type="text" id="query-input-mssv" class="form-control" placeholder="Nhập MSSV cần tra cứu (VD: B22DCCN001)...">
+                        <button type="button" class="btn-action btn-primary" onclick="queryStudentBalance()">
+                            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                            <span>Tra cứu</span>
+                        </button>
+                    </div>
+
+                    <div id="query-result-box" class="query-card" style="display: none;">
+                        <div class="query-header">
+                            <div>
+                                <div class="query-name" id="q-name">—</div>
+                                <div class="query-mssv" id="q-mssv">—</div>
+                            </div>
+                            <div id="q-status-pill" class="badge bg-success">Ngoài bãi</div>
+                        </div>
+
+                        <div class="query-balance-box">
+                            <div class="balance-label">Số dư ví hiện tại</div>
+                            <div class="balance-number text-success" id="q-balance">0 VNĐ</div>
+                        </div>
+
+                        <div class="deposit-form-inline">
+                            <label class="form-label" for="inp-admin-deposit">Số tiền cần nạp tại quầy (VNĐ):</label>
+                            <div class="flex-row gap-2">
+                                <input type="number" id="inp-admin-deposit" class="form-control font-bold" placeholder="Nhập số tiền..." min="1000" step="1000">
+                                <button type="button" class="btn-action btn-success" onclick="submitAdminDeposit()">
+                                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                                    <span>Nạp tiền</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 5: AUDIT HISTORY -->
+            <section id="tab-history" class="admin-tab-pane">
+                <div class="card-panel">
+                    <div class="panel-header">
+                        <div>
+                            <h2 class="panel-title">Nhật ký Lịch sử Toàn Hệ thống</h2>
+                            <p class="panel-sub">Lưu vết toàn bộ sự kiện quẹt xe, thanh toán cước và xử lý sự cố an ninh</p>
+                        </div>
+                        <button type="button" class="btn-action btn-secondary" onclick="loadAdminHistory(true)">
+                            <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 21h5v-5"/></svg>
+                            <span>Làm mới</span>
+                        </button>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Thời gian</th>
+                                    <th>MSSV</th>
+                                    <th>Biển số xe</th>
+                                    <th>Phương thức / Người xử lý</th>
+                                    <th>Biến động số dư</th>
+                                    <th>Trạng thái sự kiện</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-history-tbody">
+                                <tr><td colspan="6" class="empty-state">Đang tải nhật ký lịch sử...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 6: STAFF INCOME -->
+            <section id="tab-staff-income" class="admin-tab-pane">
+                <div class="card-panel">
+                    <div class="panel-header">
+                        <div>
+                            <h2 class="panel-title">Bảng tính Thu nhập Nhân viên Bảo vệ</h2>
+                            <p class="panel-sub">Lương cơ bản theo ca (Hành chính 3.000.000đ / Ca đêm 4.000.000đ) + Thưởng 50.000đ/lần xử lý sự cố</p>
+                        </div>
+                        
+                        <div class="flex-row gap-2">
+                            <select id="sel-income-month" class="form-control" style="width: 120px;">
+                                <option value="1">Tháng 1</option><option value="2">Tháng 2</option>
+                                <option value="3">Tháng 3</option><option value="4">Tháng 4</option>
+                                <option value="5">Tháng 5</option><option value="6">Tháng 6</option>
+                                <option value="7">Tháng 7</option><option value="8" selected>Tháng 8</option>
+                                <option value="9">Tháng 9</option><option value="10">Tháng 10</option>
+                                <option value="11">Tháng 11</option><option value="12">Tháng 12</option>
+                            </select>
+                            <input type="number" id="inp-income-year" class="form-control font-bold" value="2026" style="width: 90px;">
+                            <button type="button" class="btn-action btn-primary" onclick="loadStaffIncomeTable()">
+                                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                                <span>Tính toán</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Mã NV</th>
+                                    <th>Họ và tên</th>
+                                    <th>Ca trực</th>
+                                    <th>Lương cơ bản</th>
+                                    <th>Số sự cố xử lý</th>
+                                    <th>Thưởng sự cố (+50k)</th>
+                                    <th>Tổng thu nhập thực nhận</th>
+                                </tr>
+                            </thead>
+                            <tbody id="staff-income-tbody">
+                                <tr><td colspan="7" class="empty-state">Đang tính toán bảng thu nhập...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 7: DATABASE SCHEMA & LIVE SQL -->
+            <section id="tab-schema" class="admin-tab-pane">
+                <div class="grid-2 gap-4">
+                    <div class="card-panel">
+                        <div class="panel-header">
+                            <h2 class="panel-title">Bản thiết kế 6 Bảng CSDL Chuẩn hóa</h2>
+                        </div>
+                        <div id="schema-table-list" class="schema-cards-list">
+                            Đang nạp cấu trúc CSDL...
+                        </div>
+                    </div>
+
+                    <div class="card-panel">
+                        <div class="panel-header">
+                            <h2 class="panel-title">Trình Thực thi SQL Trực tiếp (Live Query)</h2>
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <label class="form-label" for="sel-preset-sql">Mẫu truy vấn CSDL môn học:</label>
+                            <select id="sel-preset-sql" class="form-control" onchange="applyPresetSql()">
+                                <option value="SELECT sv.mssv, sv.ho_ten, sv.lop, sv.khoa, COUNT(CASE WHEN ls.trang_thai LIKE '%Thành công - Xe vào%' THEN 1 END) AS so_luot_gui_xe, SUM(CASE WHEN ls.so_tien > 0 THEN ls.so_tien ELSE 0 END) AS tong_phi_da_tra FROM SinhVien sv JOIN LichSu ls ON sv.mssv = ls.mssv WHERE ls.trang_thai NOT LIKE '%Gộp lượt%' GROUP BY sv.mssv, sv.ho_ten, sv.lop, sv.khoa ORDER BY so_luot_gui_xe DESC;">[Yêu cầu 1] Sinh viên gửi xe nhiều nhất trong tháng (Có gộp lượt &lt; 5p)</option>
+                                <option value="SELECT nv.ma_nv, nv.ho_ten, nv.ca_truc, CASE WHEN nv.ca_truc = 'Hành chính' THEN 3000000 ELSE 4000000 END AS luong_co_ban, COUNT(ls.id) AS so_su_co_xu_ly, COUNT(ls.id) * 50000 AS tien_thuong, (CASE WHEN nv.ca_truc = 'Hành chính' THEN 3000000 ELSE 4000000 END) + (COUNT(ls.id) * 50000) AS tong_thu_nhap FROM NhanVien nv LEFT JOIN LichSu ls ON (ls.ma_nv_xu_ly = nv.ma_nv OR ls.phuong_thuc LIKE '%' || nv.ma_nv || '%') GROUP BY nv.ma_nv, nv.ho_ten, nv.ca_truc ORDER BY tong_thu_nhap DESC;">[Yêu cầu 2] Tính thu nhập Nhân viên Bảo vệ (Lương ca + Thưởng 50k/sự cố)</option>
+                                <option value="SELECT sv.mssv, sv.ho_ten, sv.sdt, sv.lop, sv.khoa, sv.so_du, sv.trang_thai AS trang_thai_xe, x.bien_so, x.loai_xe, nfc.ma_the AS ma_the_nfc_active FROM SinhVien sv LEFT JOIN Xe x ON sv.mssv = x.mssv LEFT JOIN TheNFC nfc ON sv.mssv = nfc.mssv AND nfc.trang_thai = 'Đang sử dụng' WHERE sv.mssv = 'B22DCCN001';">[Yêu cầu 3] Tra cứu thông tin cá nhân, ví và trạng thái xe SV cụ thể</option>
+                                <option value="SELECT strftime('%Y-%m', thoi_gian) AS thang, COUNT(CASE WHEN so_tien > 0 THEN 1 END) AS so_luot_thu_phi, SUM(CASE WHEN so_tien > 0 THEN so_tien ELSE 0 END) AS doanh_thu_phi_gui_xe, (SELECT SUM(so_tien) FROM GiaoDichVi WHERE loai_giao_dich = 'Nạp tiền') AS tong_tien_nap_vi_tach_biet FROM LichSu WHERE trang_thai LIKE '%Thành công%' GROUP BY strftime('%Y-%m', thoi_gian);">[Yêu cầu 4] Doanh thu bãi xe theo tháng (Phân biệt với tiền nạp ví)</option>
+                                <option value="SELECT ca_truc, COUNT(ma_nv) AS so_luong_nhan_vien, CASE WHEN COUNT(ma_nv) BETWEEN 1 AND 3 THEN 'Hợp lệ (1 - 3 NV/ca)' ELSE 'Vi phạm ràng buộc' END AS trang_thai_phan_cong FROM NhanVien GROUP BY ca_truc;">[Ràng buộc 5] Phân công ca trực bảo vệ (1 đến 3 người/ca)</option>
+                            </select>
+                        </div>
+
+                        <textarea id="sql-console-input" class="form-control font-mono sql-textarea" rows="4"></textarea>
+
+                        <div class="flex-row justify-end gap-2 mt-2">
+                            <button type="button" class="btn-action btn-success" onclick="runSqlConsole()">
+                                <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                                <span>Thực thi câu lệnh SQL</span>
+                            </button>
+                        </div>
+
+                        <div class="mt-4">
+                            <div class="form-label">Kết quả truy vấn:</div>
+                            <div id="sql-result-display" class="sql-result-box">
+                                <p class="text-muted">Bấm "Thực thi câu lệnh SQL" để xem dữ liệu trả về.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Modal: Add Student -->
+    <div id="modal-add-student" class="modal-backdrop" style="display: none;" onclick="handleModalOverlayClick(event, 'modal-add-student')">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3 class="modal-title">Đăng ký thông tin Sinh viên mới</h3>
+                <button type="button" class="modal-close-btn" onclick="closeAddStudentModal()">&times;</button>
+            </div>
+            <form id="form-add-student" onsubmit="submitAddStudent(event)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label" for="add-mssv">Mã số sinh viên (MSSV):</label>
+                        <input type="text" id="add-mssv" class="form-control font-mono uppercase" placeholder="VD: B22DCCN004" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="add-name">Họ và tên sinh viên:</label>
+                        <input type="text" id="add-name" class="form-control" placeholder="VD: Hoàng Minh Đức" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="add-plate">Biển số xe đăng ký:</label>
+                        <input type="text" id="add-plate" class="form-control font-mono uppercase" placeholder="VD: 29A1-88888" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="add-nfc">Mã thẻ NFC cấp phát:</label>
+                        <input type="text" id="add-nfc" class="form-control font-mono uppercase" placeholder="VD: NFC004" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="add-balance">Số dư nạp khởi tạo (VNĐ):</label>
+                        <input type="number" id="add-balance" class="form-control font-bold" value="50000" min="0" step="1000" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-action btn-secondary" onclick="closeAddStudentModal()">Hủy</button>
+                    <button type="submit" class="btn-action btn-primary">Lưu đăng ký</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Cars in Parking -->
+    <div id="modal-cars-parking" class="modal-backdrop" style="display: none;" onclick="handleModalOverlayClick(event, 'modal-cars-parking')">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3 class="modal-title">Danh sách xe đang có mặt trong bãi</h3>
+                <button type="button" class="modal-close-btn" onclick="closeCarsInParkingModal()">&times;</button>
+            </div>
+            <div class="modal-body" style="max-height: 400px; overflow-y: auto; padding: 0;">
+                <table class="table" style="margin: 0;">
+                    <thead>
+                        <tr>
+                            <th>MSSV</th>
+                            <th>Họ tên</th>
+                            <th>Biển số xe</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cars-in-parking-tbody"></tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-action btn-secondary" onclick="closeCarsInParkingModal()">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="admin-toast" class="toast-popup"></div>
+
+    <script src="/static/js/admin_script.js"></script>
+</body>
+</html>
